@@ -29,6 +29,7 @@ class TextManager {
             case 3:
             return "test";
         }
+        return "";
     }
 };
 
