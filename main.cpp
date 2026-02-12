@@ -3,25 +3,6 @@
 #include <fstream>
 #include <conio.h>
 
-std::string readRandomSentence(int Index, std::string filePath){
-    std::string line;
-    int random = 0;
-    int numOfLines = 0;
-    std::ifstream File(filePath);
-    
-        srand(time(0));
-        random = rand() % Index;
-
-    while(getline(File, line))
-    {
-        ++numOfLines;
-
-        if(numOfLines == random)
-        {
-            return line;
-        }
-    }
-}
 
 
 class TypingSession {
@@ -73,6 +54,27 @@ public:
 };
 
 class TextManager {
+    private:
+        std::string readRandomSentence(int Index, std::string filePath){
+            std::string line;
+            int random = 0;
+            int numOfLines = 0;
+            std::ifstream File(filePath);
+            
+                srand(time(0));
+                random = rand() % Index;
+
+            while(getline(File, line))
+            {
+                ++numOfLines;
+
+                if(numOfLines == random)
+                {
+                    return line;
+                }
+            }
+        }
+
     public:
     std::string selectRandomString(int difficulty){
         switch (difficulty){
