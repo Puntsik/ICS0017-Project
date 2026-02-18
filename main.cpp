@@ -10,16 +10,18 @@ private:
     static constexpr int QUIT_KEY = 27; 
     static constexpr int BACKSPACE_KEY = 8;
 
+    // code control ANSI to work with the cursors
     void hideCursor() { std::cout << "\033[?25l"; }
     void showCursor() { std::cout << "\033[?25h"; }
     void resetCursor() { std::cout << "\033[H"; }
     std::string clearLine() { return "\033[K"; }
     void initialClear() { std::cout << "\033[2J"; }
     
+
     void mainLogic(bool& complete, std::string& mainText){
-        if (_kbhit()) { 
+        if (_kbhit()) { // checks if the keyboard was hit
             char c = _getch(); 
-            if (c == QUIT_KEY) {
+            if (c == QUIT_KEY) { // gets the character
                 complete = true;
             } else if (c == BACKSPACE_KEY){
                 if (!mainText.empty()) mainText.pop_back();
@@ -30,6 +32,7 @@ private:
 }
     
 public:
+    // starts the session with a reference string, in this case a text (read-only)
     void startSession(std::string &text){
         bool complete = false;
         hideCursor(); 
@@ -55,6 +58,7 @@ public:
 
 class TextManager {
     private:
+        // supposedly takes a random sentence from a /data/*.txt, not yet implemented
         std::string readRandomSentence(int Index, std::string filePath){
             std::string line;
             int random = 0;
@@ -90,14 +94,17 @@ class TextManager {
 };
 
 int main(int argc, const char * argv[]){
+    // init of the managers
     DifficultyManager diffManager;
     TextManager textManager;
     TypingSession session;
+    // test to check if colors work on terminal
     std::cout << "\033[31mAcest text este rosu!\033[0m" << std::endl;
 
     int difficulty = diffManager.chooseDiff();
     std::string text = textManager.selectRandomString(difficulty);
 
+    // the most important part
     session.startSession(text);
 
     return 0;
