@@ -1,0 +1,23 @@
+#pragma once
+#include <string>
+
+class TypingSession {
+private:
+    static constexpr int QUIT_KEY = 27;
+    static constexpr int BACKSPACE_KEY = 8;
+
+    // code control ANSI to work with the cursors
+    void hideCursor();
+    void showCursor();
+    void resetCursor();
+    std::string clearLine();
+    void initialClear();
+
+
+    void mainLogic(bool& complete, std::string& mainText);
+
+public:
+    // starts the session with a reference string, in this case a text (read-only)
+    void startSession(std::string& text);
+
+};
