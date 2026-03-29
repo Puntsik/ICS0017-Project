@@ -2,10 +2,16 @@
 #include <iostream>
 #include <conio.h>
 
-
 const std::string RED    = "\033[31m";
 const std::string GREEN  = "\033[32m";
 const std::string RESET  = "\033[0m";
+
+void TypingSession::handleSigint(int signal) {
+    std::cout << RESET;   
+    std::cout << "\033[?25h"; 
+    std::cout << std::endl;
+    std::_Exit(0);        
+}
 
 void TypingSession::hideCursor() {
 	std::cout << "\033[?25l";
@@ -44,6 +50,7 @@ void TypingSession::mainLogic(bool& complete, std::string& userInput, const std:
 }
 
 void TypingSession::startSession(const std::string& targetText) {
+    
     bool complete = false;
     std::string userInput = "";
     hideCursor();
@@ -72,5 +79,6 @@ void TypingSession::startSession(const std::string& targetText) {
 
         mainLogic(complete, userInput, targetText);
     }
+    std::cout << RESET;
     showCursor();
 }

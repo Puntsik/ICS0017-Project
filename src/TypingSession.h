@@ -17,6 +17,8 @@ private:
 
 public:
     // starts the session with a reference string, in this case a text (read-only)
+    
+    static void handleSigint(int signal);
     void startSession(const std::string& text);
 
 };
