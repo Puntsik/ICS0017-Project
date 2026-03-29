@@ -3,6 +3,9 @@
 #include <conio.h>
 
 
+const std::string RED    = "\033[31m";
+const std::string GREEN  = "\033[32m";
+const std::string RESET  = "\033[0m";
 
 void TypingSession::hideCursor() {
 	std::cout << "\033[?25l";
@@ -25,33 +28,49 @@ void TypingSession::initialClear() {
 }
 
 
-void TypingSession::mainLogic(bool& complete, std::string& mainText) {
-    if (_kbhit()) { // checks if the keyboard was hit
+void TypingSession::mainLogic(bool& complete, std::string& userInput, const std::string& targetText) {
+    if (_kbhit()) {
         char c = _getch();
-        if (c == QUIT_KEY) { // gets the character
+        if (c == QUIT_KEY) {
             complete = true;
         }
         else if (c == BACKSPACE_KEY) {
-            if (!mainText.empty()) mainText.pop_back();
+            if (!userInput.empty()) userInput.pop_back();
         }
         else {
-            mainText += c;
+            userInput += c;
         }
     }
 }
 
-
-
-void TypingSession::startSession(std::string& text) {
+void TypingSession::startSession(const std::string& targetText) {
     bool complete = false;
+    std::string userInput = "";
     hideCursor();
     initialClear();
 
     while (!complete) {
         resetCursor();
-        std::cout << text << " " << clearLine();
-        mainLogic(complete, text);
-    }
+        std::cout << "\r";
+        // loop through every character in the text the user is supposed to type
+        for (int i = 0; i < targetText.size(); i++){
+            // checks if the user has typed
+            if (i < userInput.size()) {
+                if (userInput[i] != targetText[i]){
+                    userInput.pop_back();
+                    std::cout << RED << targetText[i] << RESET;
+                } else {
+                    std::cout << GREEN << userInput[i] << RESET;
+                }
+                
+            } else {
+                std::cout << RED << targetText[i] << RESET;
+            }
+        }
 
+        std::cout << clearLine();
+
+        mainLogic(complete, userInput, targetText);
+    }
     showCursor();
 }
