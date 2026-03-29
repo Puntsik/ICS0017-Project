@@ -13,11 +13,12 @@ private:
     std::string clearLine();
     void initialClear();
 
-
-    void mainLogic(bool& complete, std::string& mainText);
+    void mainLogic(bool& complete, std::string& userInput, const std::string& targetText);
 
 public:
     // starts the session with a reference string, in this case a text (read-only)
-    void startSession(std::string& text);
+    
+    static void handleSigint(int signal);
+    void startSession(const std::string& text);
 
 };

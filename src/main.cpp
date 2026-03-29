@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <csignal>
 #include "TypingSession.h"
 #include "TextManager.h"
 #include "DifficultyManager.h"
@@ -10,6 +11,7 @@ int main(int argc, const char * argv[]){
     DifficultyManager diffManager;
     TextManager textManager;
     TypingSession session;
+    std::signal(SIGINT, session.handleSigint);
 
     // currently just reads the test.txt with 3 lines; 1 for each possible difficulty selection.
     if (textManager.loadTextFile("data/test.txt")) {
