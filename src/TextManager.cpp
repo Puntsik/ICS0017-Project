@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-
 bool TextManager::loadText(const std::string& filePath) {
     // for testing; to be removed from final release
     std::cout << "Trying to open: " << filePath << '\n';
