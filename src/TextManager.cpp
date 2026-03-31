@@ -2,10 +2,8 @@
 #include <fstream>
 
 #include <iostream>
-#include <filesystem>
 
-
-bool TextManager::loadTextFile(const std::string& filePath) {
+bool TextManager::loadText(const std::string& filePath) {
     // for testing; to be removed from final release
     std::cout << "Trying to open: " << filePath << '\n';
 
@@ -28,7 +26,7 @@ bool TextManager::loadTextFile(const std::string& filePath) {
     return !textLines.empty();
 }
 
-std::string TextManager::selectRandomString(int difficulty) {
+std::string TextManager::selectRandom(int difficulty) {
 
     switch (difficulty) {
     case 1:
@@ -39,5 +37,14 @@ std::string TextManager::selectRandomString(int difficulty) {
         return textLines[2];
     }
     return "";
+}
+
+// Deprecated methods for backward compatibility
+bool TextManager::loadTextFile(const std::string& filePath) {
+    return loadText(filePath);
+}
+
+std::string TextManager::selectRandomString(int difficulty) {
+    return selectRandom(difficulty);
 }
 
