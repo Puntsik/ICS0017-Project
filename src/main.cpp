@@ -4,6 +4,8 @@
 #include "TypingSession.h"
 #include "TextManager.h"
 #include "DifficultyManager.h"
+#include "Results.h"
+
 
 
 int main(int argc, const char * argv[]){
@@ -28,6 +30,9 @@ int main(int argc, const char * argv[]){
 
     // the most important part
     session.startSession(text);
+
+    Results newresult(session.getMistakes(), session.getCorrect());
+    newresult.display_results();
 
     return 0;
 }

@@ -15,10 +15,16 @@ private:
 
     void mainLogic(bool& complete, std::string& userInput, const std::string& targetText);
 
+    //store results to send to Results object
+    int mistakeCount;
+    int correctCount;
+
 public:
     // starts the session with a reference string, in this case a text (read-only)
     
     static void handleSigint(int signal);
     void startSession(const std::string& text);
-
+    
+    int getMistakes();
+    int getCorrect();
 };
