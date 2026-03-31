@@ -34,10 +34,10 @@ jobs:
     - name: Verify Executable
       run: |
         if (Test-Path ".\main.exe") {
-          Write-Host "✓ Successfully built main.exe"
+          Write-Host "[SUCCESS] Successfully built main.exe"
           Get-Item ".\main.exe" | Format-List -Property Name, Length, LastWriteTime
         } else {
-          Write-Host "✗ Failed to build main.exe"
+          Write-Host "[FAILURE] Failed to build main.exe"
           exit 1
         }
       shell: powershell
