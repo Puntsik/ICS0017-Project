@@ -5,6 +5,8 @@
 const std::string RED    = "\033[31m";
 const std::string GREEN  = "\033[32m";
 const std::string RESET  = "\033[0m";
+const std::string YELLOW = "\033[33m";
+
 
 void TypingSession::handleSigint(int signal) {
     std::cout << RESET;   
@@ -56,29 +58,54 @@ void TypingSession::startSession(const std::string& targetText) {
     hideCursor();
     initialClear();
 
+    // collect error (misinput) keys
+    std::string falseInput = "";
+    
+    std::string falseBuffer = "";
     while (!complete) {
         resetCursor();
         std::cout << "\r";
+
+
         // loop through every character in the text the user is supposed to type
         for (int i = 0; i < targetText.size(); i++){
             // checks if the user has typed
             if (i < userInput.size()) {
                 if (userInput[i] != targetText[i]){
+                    falseInput += userInput.back();
                     userInput.pop_back();
                     std::cout << RED << targetText[i] << RESET;
                 } else {
                     std::cout << GREEN << userInput[i] << RESET;
                 }
-                
-            } else {
+            } 
+            else {
                 std::cout << RED << targetText[i] << RESET;
             }
         }
+        
+        // check if text has been completed by user
+        if (userInput == targetText) {
+            complete = true;
+            std::cout << "\n" << GREEN << "COMPLETED" << RESET << std::endl;
 
+        }
+        
         std::cout << clearLine();
-
-        mainLogic(complete, userInput, targetText);
+        if (!complete) mainLogic(complete, userInput, targetText);
     }
     std::cout << RESET;
+    
+    mistakeCount = falseInput.length();
+    correctCount = targetText.length();
+    
     showCursor();
+}
+
+int TypingSession::getMistakes() {
+    return mistakeCount;
+}
+
+int TypingSession::getCorrect() {
+    return correctCount;
 }

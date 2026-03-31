@@ -29,6 +29,7 @@ bool TextManager::loadTextFile(const std::string& filePath) {
 }
 
 std::string TextManager::selectRandomString(int difficulty) {
+
     switch (difficulty) {
     case 1:
         return textLines[0];
@@ -39,3 +40,4 @@ std::string TextManager::selectRandomString(int difficulty) {
     }
     return "";
 }
+
