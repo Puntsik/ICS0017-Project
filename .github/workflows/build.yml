@@ -1,0 +1,48 @@
+name: Build and Test C++ Project
+
+on:
+  push:
+    branches: [ main, "feat/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: Setup MSVC compiler
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Compile C++ Project
+      run: |
+        cd src
+        cl /EHsc /std:c++17 ^
+          main.cpp ^
+          TextManager.cpp ^
+          TypingSession.cpp ^
+          DifficultyManager.cpp ^
+          Results.cpp ^
+          /Fe: ..\main.exe
+      shell: cmd
+    
+    - name: Verify Executable
+      run: |
+        if (Test-Path ".\main.exe") {
+          Write-Host "[SUCCESS] Successfully built main.exe"
+          Get-Item ".\main.exe" | Format-List -Property Name, Length, LastWriteTime
+        } else {
+          Write-Host "[FAILURE] Failed to build main.exe"
+          exit 1
+        }
+      shell: powershell
+    
+    - name: Check Compilation Success
+      run: |
+        echo "Build completed successfully!"
+      shell: cmd
