@@ -2,7 +2,6 @@
 #include <fstream>
 
 #include <iostream>
-#include <filesystem>
 
 
 bool TextManager::loadText(const std::string& filePath) {
