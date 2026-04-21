@@ -36,17 +36,18 @@ void TypingSession::initialClear() {
 }
 
 
-void TypingSession::mainLogic(bool& complete, std::string& userInput, const std::string& targetText) {
+void TypingSession::mainLogic(bool& complete, std::string& activeInput, std::string& fullUserInput, const std::string& targetText) {
     if (_kbhit()) {
         char c = _getch();
         if (c == QUIT_KEY) {
             complete = true;
         }
         else if (c == BACKSPACE_KEY) {
-            if (!userInput.empty()) userInput.pop_back();
+            if (!activeInput.empty()) activeInput.pop_back();
         }
         else {
-            userInput += c;
+            activeInput += c;
+            fullUserInput += c;
         }
     }
 }
@@ -54,49 +55,54 @@ void TypingSession::mainLogic(bool& complete, std::string& userInput, const std:
 void TypingSession::startSession(const std::string& targetText) {
     
     bool complete = false;
-    std::string userInput = "";
+    std::string activeInput = "";
+    std::string fullUserInput = "";
     hideCursor();
     initialClear();
 
-    // collect error (misinput) keys
-    std::string falseInput = "";
-    
-    std::string falseBuffer = "";
     while (!complete) {
         resetCursor();
         std::cout << "\r";
 
+        // check if text has been completed by user
+        if (activeInput == targetText) {
+            complete = true;
+            for (int i = 0; i < targetText.length(); ++i) {
+                std::cout << GREEN << targetText[i] << RESET;
+            }
+            std::cout << "\n" << GREEN << "COMPLETED" << RESET << std::endl;
 
-        // loop through every character in the text the user is supposed to type
-        for (int i = 0; i < targetText.size(); i++){
-            // checks if the user has typed
-            if (i < userInput.size()) {
-                if (userInput[i] != targetText[i]){
-                    falseInput += userInput.back();
-                    userInput.pop_back();
-                    std::cout << RED << targetText[i] << RESET;
-                } else {
-                    std::cout << GREEN << userInput[i] << RESET;
+        }
+        else {
+            // typing display
+
+            int head = 0;
+            //correctly typed characters
+            while (true) {
+                if (activeInput[head] == targetText[head]) {
+                    std::cout << GREEN << activeInput[head] << RESET;
+                    head += 1;
                 }
-            } 
-            else {
+                else {
+                    break;
+                }
+            }
+            // incorrectly typed characters
+            for (int i = head; i < activeInput.size(); ++i) {
+                std::cout << YELLOW << activeInput[i] << RESET;
+            }
+            // characters left to type
+            for (int i = head; i < targetText.size(); ++i) {
                 std::cout << RED << targetText[i] << RESET;
             }
         }
         
-        // check if text has been completed by user
-        if (userInput == targetText) {
-            complete = true;
-            std::cout << "\n" << GREEN << "COMPLETED" << RESET << std::endl;
-
-        }
-        
         std::cout << clearLine();
-        if (!complete) mainLogic(complete, userInput, targetText);
+        if (!complete) mainLogic(complete, activeInput, fullUserInput, targetText);
     }
     std::cout << RESET;
     
-    mistakeCount = falseInput.length();
+    mistakeCount = fullUserInput.length() - targetText.length();
     correctCount = targetText.length();
     
     showCursor();

@@ -15,7 +15,7 @@ Results::Results(int m, int c) {
 
 void Results::display_results() {
 	std::cout << "\nResults:\n" << std::endl;
-	std::cout << "Total mistakes: " << mistakeCount << std::endl;
+	std::cout << "Total mistyped characters: " << mistakeCount << std::endl;
 
 	if (typingAccuracy >= 70) {
 		std::cout << "Typing accuracy: " << GREEN << std::fixed << std::setprecision(2) << typingAccuracy << "%" << RESET << std::endl;
