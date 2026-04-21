@@ -13,7 +13,8 @@ private:
     std::string clearLine();
     void initialClear();
 
-    void mainLogic(bool& complete, std::string& userInput, const std::string& targetText);
+    void mainLogic(bool& complete, std::string& activeInput, std::string& fullUserInput, const std::string& targetText);
+
 
     //store results to send to Results object
     int mistakeCount;
