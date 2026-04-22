@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <chrono>
 
 class TypingSession {
 private:
@@ -19,6 +20,7 @@ private:
     //store results to send to Results object
     int mistakeCount;
     int correctCount;
+    std::chrono::milliseconds duration;
 
 public:
     // starts the session with a reference string, in this case a text (read-only)
@@ -28,4 +30,5 @@ public:
     
     int getMistakes();
     int getCorrect();
+    int getDuration();
 };

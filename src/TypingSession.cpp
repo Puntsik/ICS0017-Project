@@ -1,6 +1,7 @@
 #include "TypingSession.h"
 #include <iostream>
 #include <conio.h>
+#include <chrono>
 
 const std::string RED    = "\033[31m";
 const std::string GREEN  = "\033[32m";
@@ -60,6 +61,9 @@ void TypingSession::startSession(const std::string& targetText) {
     hideCursor();
     initialClear();
 
+    //  start timer
+    auto start = std::chrono::high_resolution_clock::now();
+
     while (!complete) {
         resetCursor();
         std::cout << "\r";
@@ -89,6 +93,10 @@ void TypingSession::startSession(const std::string& targetText) {
             }
             // incorrectly typed characters
             for (int i = head; i < activeInput.size(); ++i) {
+                if (activeInput[i] == ' ') {
+                    std::cout << YELLOW << '_' << RESET;
+                    continue;
+                }
                 std::cout << YELLOW << activeInput[i] << RESET;
             }
             // characters left to type
@@ -100,8 +108,12 @@ void TypingSession::startSession(const std::string& targetText) {
         std::cout << clearLine();
         if (!complete) mainLogic(complete, activeInput, fullUserInput, targetText);
     }
+    //  end timer
+    auto end = std::chrono::high_resolution_clock::now();
+    //duration in ms
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
     std::cout << RESET;
-    
     mistakeCount = fullUserInput.length() - targetText.length();
     correctCount = targetText.length();
     
@@ -114,4 +126,8 @@ int TypingSession::getMistakes() {
 
 int TypingSession::getCorrect() {
     return correctCount;
+}
+
+int TypingSession::getDuration() {
+    return duration.count();
 }
