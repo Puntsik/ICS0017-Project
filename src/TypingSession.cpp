@@ -74,7 +74,7 @@ void TypingSession::startSession(const std::string& targetText) {
             for (int i = 0; i < targetText.length(); ++i) {
                 std::cout << GREEN << targetText[i] << RESET;
             }
-            std::cout << "\n" << GREEN << "COMPLETED" << RESET << std::endl;
+            std::cout << "\n" << GREEN << "\nCOMPLETED" << RESET << std::endl;
 
         }
         else {
