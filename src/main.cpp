@@ -5,6 +5,7 @@
 #include "TextManager.h"
 #include "DifficultyManager.h"
 #include "Results.h"
+#include "utils.h"
 
 int main(int argc, const char* argv[]) {
     DifficultyManager diffManager;
@@ -30,6 +31,7 @@ int main(int argc, const char* argv[]) {
         std::cout << "Error: " << e.what() << std::endl;
         return 1;
     }
+    charToContinue();
 
     return 0;
 }
