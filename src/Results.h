@@ -8,7 +8,8 @@ private:
 	int correctCount;
 	float duration;
 	float typingAccuracy;
+	bool quitStatus;
 public:
-	Results(int m, int c, int d);
+	Results(int m, int c, int d, bool q);
 	void display_results(); 
 };

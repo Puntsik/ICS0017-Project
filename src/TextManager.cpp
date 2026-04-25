@@ -32,10 +32,9 @@ std::string TextManager::selectRandom(int difficulty) {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, 9);
     int randomIndex = dist(gen);
-    std::cout << "randomIndex: " << randomIndex << std::endl;
 
     int head = 0;
-    randomIndex = 1;
+    
     switch (difficulty) {
     case 1:
         head = 0 + randomIndex;
