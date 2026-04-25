@@ -37,7 +37,7 @@ int main(int argc, const char* argv[]) {
     // the most important part
     session.startSession(text);
 
-    Results newresult(session.getMistakes(), session.getCorrect(), session.getDuration());
+    Results newresult(session.getMistakes(), session.getCorrect(), session.getDuration(), session.getQuitStatus(), session.getTextLength());
     newresult.display_results();
 
     return 0;

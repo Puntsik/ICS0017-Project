@@ -6,21 +6,19 @@ class TypingSession {
 private:
     static constexpr int QUIT_KEY = 27;
     static constexpr int BACKSPACE_KEY = 8;
+    static constexpr int ENTER_KEY = 13;
 
-    // code control ANSI to work with the cursors
-    void hideCursor();
-    void showCursor();
-    void resetCursor();
-    std::string clearLine();
-    void initialClear();
+    
 
-    void mainLogic(bool& complete, std::string& activeInput, std::string& fullUserInput, const std::string& targetText);
+    void mainLogic(bool& complete, bool& quit, std::string& activeInput, std::string& fullUserInput, const std::string& targetText);
 
 
     //store results to send to Results object
     int mistakeCount;
     int correctCount;
     std::chrono::milliseconds duration;
+    bool quitStatus = false;
+    int textLength;
 
 public:
     // starts the session with a reference string, in this case a text (read-only)
@@ -31,4 +29,15 @@ public:
     int getMistakes();
     int getCorrect();
     int getDuration();
+    int calculateTextLength(const std::string& text);
+    bool getQuitStatus();
+    int getTextLength();
+
+    // code control ANSI to work with the cursors
+    static void hideCursor();
+    static void showCursor();
+    static void resetCursor();
+    static std::string clearLine();
+    static void initialClear();
+    static void cursorDown();
 };

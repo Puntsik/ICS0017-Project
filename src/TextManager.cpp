@@ -1,6 +1,6 @@
 #include "TextManager.h"
 #include <fstream>
-
+#include <random>
 #include <iostream>
 
 bool TextManager::loadText(const std::string& filePath) {
@@ -27,16 +27,28 @@ bool TextManager::loadText(const std::string& filePath) {
 }
 
 std::string TextManager::selectRandom(int difficulty) {
+    //  get random index for choosing text
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0, 9);
+    int randomIndex = dist(gen);
 
+    int head = 0;
+    
+    
     switch (difficulty) {
     case 1:
-        return textLines[0];
+        head = 0 + randomIndex;
+        return textLines[head];
     case 2:
-        return textLines[1];
+        head = 10 + randomIndex;
+        return textLines[head];
     case 3:
-        return textLines[2];
+        head = 20 + randomIndex;
+        return textLines[head];
     }
     return "";
+    
 }
 
 // Deprecated methods for backward compatibility
