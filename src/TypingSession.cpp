@@ -160,9 +160,20 @@ void TypingSession::startSession(const std::string& targetText) {
     else {
         mistakeCount = fullUserInput.length() - targetText.length();
         correctCount = targetText.length();
+        textLength = calculateTextLength(targetText);
     }
 
     showCursor();
+}
+
+int TypingSession::calculateTextLength(const std::string& text) {
+    int length = 1;
+    for (int i = 0; i < text.length(); ++i) {
+        if (text[i] == ' ') {
+            length++;
+        }
+    }
+    return length;
 }
 
 int TypingSession::getMistakes() {
@@ -179,4 +190,8 @@ int TypingSession::getDuration() {
 
 bool TypingSession::getQuitStatus() {
     return quitStatus;
+}
+
+int TypingSession::getTextLength() {
+    return textLength;
 }

@@ -18,6 +18,7 @@ private:
     int correctCount;
     std::chrono::milliseconds duration;
     bool quitStatus = false;
+    int textLength;
 
 public:
     // starts the session with a reference string, in this case a text (read-only)
@@ -28,7 +29,9 @@ public:
     int getMistakes();
     int getCorrect();
     int getDuration();
+    int calculateTextLength(const std::string& text);
     bool getQuitStatus();
+    int getTextLength();
 
     // code control ANSI to work with the cursors
     static void hideCursor();

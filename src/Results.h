@@ -9,7 +9,9 @@ private:
 	float duration;
 	float typingAccuracy;
 	bool quitStatus;
+	int textLength;
+	double WPM;
 public:
-	Results(int m, int c, int d, bool q);
+	Results(int m, int c, int d, bool q, int l);
 	void display_results(); 
 };
