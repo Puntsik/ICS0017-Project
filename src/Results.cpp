@@ -5,13 +5,21 @@
 #include "constants.h"
 
 Results::Results(int m, int c, int d, bool q, int l) {
-	mistakeCount = m;
-	correctCount = c;
-	duration = float(d) / 1000;
-	typingAccuracy = 100 * (float(correctCount) / (correctCount + mistakeCount));
-	quitStatus = q;
-	textLength = l;
-	WPM = (double(textLength) / duration) * 60;
+    mistakeCount = m;
+    correctCount = c;
+    duration     = float(d) / 1000;
+    quitStatus   = q;
+    textLength   = l;
+
+    if (correctCount + mistakeCount > 0)
+        typingAccuracy = 100 * (float(correctCount) / (correctCount + mistakeCount));
+    else
+        typingAccuracy = 0.0f;
+
+    if (duration > 0 && textLength > 0)
+        WPM = (double(textLength) / duration) * 60;
+    else
+        WPM = 0.0;
 }
 
 void Results::display_results() {
