@@ -2,7 +2,9 @@
 #include <iostream>
 #include <conio.h>
 #include <chrono>
+
 #include <iomanip>
+#include <random>
 
 const std::string RED    = "\033[31m";
 const std::string GREEN  = "\033[32m";
@@ -75,12 +77,19 @@ void TypingSession::startSession(const std::string& targetText) {
 
     //  counter to clear line every 100 loops
     int clearCounter = 0;
+
+
+    // Random color generator setup (choose one color for the whole session)
+    static std::mt19937 rng(std::random_device{}());
+    static std::uniform_int_distribution<int> colorDist(31, 36); // ANSI 31-36: red, green, yellow, blue, magenta, cyan
+    int chosenColorCode = colorDist(rng);
+    std::string chosenColor = "\033[" + std::to_string(chosenColorCode) + "m";
+
     while (!complete && !quit) {
         int displayTextLength = targetText.length();
         resetCursor();
         std::cout << "\r";
 
-        // check if text has been completed by user
         if (activeInput == targetText) {
             complete = true;
             for (int i = 0; i < targetText.length(); ++i) {
@@ -141,12 +150,30 @@ void TypingSession::startSession(const std::string& targetText) {
             //  print current time elapsed
             float currentDuration = currentTime.count();
             std::cout << "\n\nTime: " << std::fixed << std::setprecision(2) << currentDuration / 1000 << std::endl;
+
+            // progress bar with one random color (chosen at session start)
+            int barWidth = 20;
+            float progress = (float)activeInput.length() / (float)targetText.length();
+            if (progress > 1.0f) progress = 1.0f;
+            int pos = (int)(progress * barWidth);
+            std::cout << "|";
+            for (int i = 0; i < barWidth; ++i) {
+                if (i == pos) {
+                    std::cout << chosenColor << "X" << RESET;
+                } else {
+                    std::cout << "-" << RESET;
+                }
+            }
+            std::cout << "|\n";
         }
         
         
         std::cout << clearLine();
         if (!complete && !quit) mainLogic(complete, quit, activeInput, fullUserInput, targetText);
     }
+    
+
+
     //  end timer
     auto end = std::chrono::high_resolution_clock::now();
     //duration in ms
