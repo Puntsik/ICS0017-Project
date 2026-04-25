@@ -2,6 +2,7 @@
 #include <iostream>
 #include <conio.h>
 #include <chrono>
+#include <iomanip>
 
 const std::string RED    = "\033[31m";
 const std::string GREEN  = "\033[32m";
