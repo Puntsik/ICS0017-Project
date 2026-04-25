@@ -27,28 +27,20 @@ bool TextManager::loadText(const std::string& filePath) {
 }
 
 std::string TextManager::selectRandom(int difficulty) {
-    //  get random index for choosing text
+    if ((int)textLines.size() < 30)
+        throw std::runtime_error("Data file incomplete. Expected at least 30 lines.");
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, 9);
     int randomIndex = dist(gen);
 
-    int head = 0;
-    
-    
     switch (difficulty) {
-    case 1:
-        head = 0 + randomIndex;
-        return textLines[head];
-    case 2:
-        head = 10 + randomIndex;
-        return textLines[head];
-    case 3:
-        head = 20 + randomIndex;
-        return textLines[head];
+    case 1: return textLines[0  + randomIndex];
+    case 2: return textLines[10 + randomIndex];
+    case 3: return textLines[20 + randomIndex];
     }
     return "";
-    
 }
 
 // Deprecated methods for backward compatibility
