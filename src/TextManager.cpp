@@ -35,15 +35,12 @@ std::string TextManager::selectRandom(int difficulty) {
     std::uniform_int_distribution<> dist(0, 9);
     int randomIndex = dist(gen);
 
-    /*
     switch (difficulty) {
     case 1: return textLines[0  + randomIndex];
     case 2: return textLines[10 + randomIndex];
     case 3: return textLines[20 + randomIndex];
     }
     return "";
-    */
-    return "welcome to estonia";
 }
 
 // Deprecated methods for backward compatibility
