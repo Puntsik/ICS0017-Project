@@ -35,6 +35,7 @@ std::string TextManager::selectRandom(int difficulty) {
 
     int head = 0;
     
+    
     switch (difficulty) {
     case 1:
         head = 0 + randomIndex;
@@ -47,6 +48,7 @@ std::string TextManager::selectRandom(int difficulty) {
         return textLines[head];
     }
     return "";
+    
 }
 
 // Deprecated methods for backward compatibility

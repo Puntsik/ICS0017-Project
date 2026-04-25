@@ -72,13 +72,12 @@ void TypingSession::startSession(const std::string& targetText) {
     //  start timer
     auto start = std::chrono::high_resolution_clock::now();
 
-
     //  counter to clear line every 100 loops
     int clearCounter = 0;
     while (!complete && !quit) {
+        int displayTextLength = targetText.length();
         resetCursor();
         std::cout << "\r";
-
 
         // check if text has been completed by user
         if (activeInput == targetText) {
@@ -90,27 +89,11 @@ void TypingSession::startSession(const std::string& targetText) {
             std::cout << GREEN << "\nCOMPLETED" << RESET << std::endl;
 
         }
-        else {
-            //  refresh line every 50 loops so that when deleting characters so that line get shorter,
-            //  old characters don't remain at the end of the line
-            //  done every 50 loops so that it doesn't make the program visually jittery
-            clearCounter++;
-            if (clearCounter == 50) {
-                clearCounter = 0;
-
-                //  TEMPORARY SOLUTION TO ONLY END OF FIRST LINE GETTING FIXED
-                //  should separate text into fixed size lines for release 4
-                //  clear 5 lines just in case
-                for (int i = 0; i < 5; ++i) {
-                    std::cout << clearLine();
-                    cursorDown();
-                }
-            }
-                
-            // typing display
+        else {              
+            // typing display:
             int head = 0;
 
-            //correctly typed characters
+            //  correctly typed characters
             while (activeInput.length() > 0 && head < activeInput.length()) {
                 if (activeInput[head] == targetText[head]) {
                     std::cout << GREEN << activeInput[head] << RESET;
@@ -125,6 +108,7 @@ void TypingSession::startSession(const std::string& targetText) {
             for (int i = head; i < activeInput.size(); ++i) {
                 if (activeInput[i] == ' ') {
                     std::cout << YELLOW << '_' << RESET;
+                    displayTextLength++;
                     continue;
                 }
                 std::cout << YELLOW << activeInput[i] << RESET;
@@ -133,7 +117,22 @@ void TypingSession::startSession(const std::string& targetText) {
             for (int i = head; i < targetText.size(); ++i) {
                 std::cout << RED << targetText[i] << RESET;
             }
-            
+
+            // clear screen and shit
+            int currentDisplayTextLength = activeInput.size() - head + 1 + targetText.size();
+            if (displayTextLength < currentDisplayTextLength) {
+                if (displayTextLength > targetText.size()) {
+                    displayTextLength -= 1;
+                }
+                //  TEMPORARY SOLUTION TO ONLY END OF FIRST LINE GETTING FIXED
+                //  should separate text into fixed size lines for release 4
+                //  clear 5 lines just in case
+                for (int i = 0; i < 5; ++i) {
+                    std::cout << clearLine();
+                    cursorDown();
+                }
+            }
+
             // display timer when typing
             auto now = std::chrono::high_resolution_clock::now();
             auto currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
@@ -154,7 +153,7 @@ void TypingSession::startSession(const std::string& targetText) {
     
     std::cout << RESET;
     if (quit) {
-        clearLine();
+        std::cout << clearLine();
         quitStatus = true;
     }
     else {
