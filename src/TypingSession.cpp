@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <chrono>
 #include "constants.h"
+#include "utils.h"
 
 #include <iomanip>
 #include <random>
@@ -148,7 +149,7 @@ void TypingSession::startSession(const std::string& targetText) {
 
             // progress bar with one random color (chosen at session start)
             int barWidth = 20;
-            float progress = (float)activeInput.length() / (float)targetText.length();
+            float progress = (float)head / (float)targetText.length();
             if (progress > 1.0f) progress = 1.0f;
             int pos = (int)(progress * barWidth);
             std::cout << "|";
