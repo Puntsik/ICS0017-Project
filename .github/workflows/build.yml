@@ -28,6 +28,7 @@ jobs:
           TypingSession.cpp ^
           DifficultyManager.cpp ^
           Results.cpp ^
+          constants.cpp ^
           /Fe: ..\main.exe
       shell: cmd
     
