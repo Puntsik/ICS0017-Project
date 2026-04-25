@@ -32,7 +32,7 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
-    std::string text = textManager.selectRandomString(difficulty);
+    std::string text = textManager.selectRandom(difficulty);
 
     // the most important part
     session.startSession(text);
