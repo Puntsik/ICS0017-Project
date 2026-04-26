@@ -29,6 +29,7 @@ jobs:
           DifficultyManager.cpp ^
           Results.cpp ^
           constants.cpp ^
+          utils.cpp ^
           /Fe: ..\main.exe
       shell: cmd
     
