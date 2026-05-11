@@ -3,8 +3,7 @@
 #include <conio.h>
 #include <chrono>
 #include "constants.h"
-#include "utils.h"
-
+#include "Client.h"
 #include <iomanip>
 #include <random>
 
@@ -40,7 +39,7 @@ void TypingSession::cursorDown() {
 }
 
 
-void TypingSession::mainLogic(bool& complete, bool& quit, std::string& activeInput, std::string& fullUserInput, const std::string& targetText) {
+void TypingSession::handleInput(bool& complete, bool& quit, std::string& activeInput, std::string& fullUserInput) {
     if (_kbhit()) {
         char c = _getch();
         if (c == QUIT_KEY) {
@@ -57,6 +56,65 @@ void TypingSession::mainLogic(bool& complete, bool& quit, std::string& activeInp
             fullUserInput += c;
         }
     }
+}
+
+// FEAT: progress bar for the multiplayer component
+void TypingSession::drawProgressBar(int position, int barWidth, bool isOpponent, bool opponentCompleted) {
+    std::string label = isOpponent ? "OPPONENT:" : "YOU:     ";
+    std::cout << label << "|";
+    
+    for (int i = 0; i < barWidth; ++i) {
+        if (i == position) {
+            std::cout << (isOpponent ? BLUE : "\033[3" + std::to_string(31 + (rand() % 6)) + "m") << "X" << RESET;
+        } else {
+            std::cout << "-" << RESET;
+        }
+    }
+    
+    if (isOpponent && opponentCompleted) {
+        std::cout << "| " << BLUE << "COMPLETED!" << RESET << std::endl;
+    } else {
+        std::cout << "|" << clearLine() << std::endl;
+    }
+}
+
+void TypingSession::drawTypingDisplay(const std::string& activeInput, const std::string& targetText, int& head) {
+    // correctly typed characters
+    while (activeInput.length() > 0 && head < activeInput.length()) {
+        if (activeInput[head] == targetText[head]) {
+            std::cout << GREEN << activeInput[head] << RESET;
+            head += 1;
+        }
+        else {
+            break;
+        }
+    }
+    
+    // incorrectly typed characters
+    for (int i = head; i < activeInput.size(); ++i) {
+        if (activeInput[i] == ' ') {
+            std::cout << YELLOW << '_' << RESET;
+        } else {
+            std::cout << YELLOW << activeInput[i] << RESET;
+        }
+    }
+    
+    // characters left to type
+    for (int i = head; i < targetText.size(); ++i) {
+        std::cout << RED << targetText[i] << RESET;
+    }
+}
+
+void TypingSession::mainLogic(bool& complete, bool& quit, std::string& activeInput, std::string& fullUserInput, const std::string& targetText) {
+    handleInput(complete, quit, activeInput, fullUserInput);
+}
+
+void TypingSession::mainLogicMultiplayer(bool& complete, bool& quit, std::string& activeInput, std::string& fullUserInput, const std::string& targetText, Client* client) {
+    handleInput(complete, quit, activeInput, fullUserInput);
+    
+    float progress = (float)activeInput.length() / (float)targetText.length();
+    if (progress > 1.0f) progress = 1.0f;
+    client->sendProgress(progress, activeInput.length(), complete);
 }
 
 void TypingSession::startSession(const std::string& targetText) {
@@ -173,6 +231,74 @@ void TypingSession::startSession(const std::string& targetText) {
     //  end timer
     auto end = std::chrono::high_resolution_clock::now();
     //duration in ms
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    std::cout << RESET;
+    if (quit) {
+        std::cout << clearLine();
+        quitStatus = true;
+    }
+    else {
+        mistakeCount = fullUserInput.length() - targetText.length();
+        correctCount = targetText.length();
+        textLength = calculateTextLength(targetText);
+    }
+
+    showCursor();
+}
+
+void TypingSession::startMultiplayerSession(const std::string& targetText, Client* client) {
+    bool complete = false;
+    bool quit = false;
+    std::string activeInput = "";
+    std::string fullUserInput = "";
+    hideCursor();
+    initialClear();
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    while (!complete && !quit && client->isGameActive()) {
+        resetCursor();
+        std::cout << "\r";
+
+        int head = 0;
+
+        if (activeInput == targetText) {
+            complete = true;
+            for (int i = 0; i < targetText.length(); ++i) {
+                std::cout << GREEN << targetText[i] << RESET;
+            }
+            initialClear();
+            std::cout << GREEN << "\n=== YOU COMPLETED ===" << RESET << std::endl;
+            client->sendProgress(1.0f, targetText.length(), true);
+        }
+        else {
+            drawTypingDisplay(activeInput, targetText, head);
+            
+            // Timer
+            auto now = std::chrono::high_resolution_clock::now();
+            auto currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+            float currentDuration = currentTime.count();
+            std::cout << "\n\n[YOUR TIME] " << std::fixed << std::setprecision(2) << currentDuration / 1000 << "s" << std::endl;
+
+            // Your progress bar
+            int barWidth = 20;
+            float progress = (float)head / (float)targetText.length();
+            if (progress > 1.0f) progress = 1.0f;
+            int pos = (int)(progress * barWidth);
+            drawProgressBar(pos, barWidth, false);
+
+            // Server progress bar
+            ServerProgress serverProg = client->getServerProgress();
+            int serverPos = (int)(serverProg.progress * barWidth);
+            drawProgressBar(serverPos, barWidth, true, serverProg.completed);
+        }
+        
+        std::cout << clearLine();
+        if (!complete && !quit) mainLogicMultiplayer(complete, quit, activeInput, fullUserInput, targetText, client);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     
     std::cout << RESET;
