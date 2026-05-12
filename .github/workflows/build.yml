@@ -30,6 +30,8 @@ jobs:
           Results.cpp ^
           constants.cpp ^
           utils.cpp ^
+          Client.cpp ^
+          Server.cpp ^
           /Fe: ..\main.exe
       shell: cmd
     

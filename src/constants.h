@@ -24,6 +24,8 @@ constexpr const char* ANSI_SHOW_CURSOR = "\033[?25h" ;
 extern const std::string RED;
 extern const std::string GREEN;
 extern const std::string YELLOW;
+// feat: added blue color
+extern const std::string BLUE;
 extern const std::string PURPLE;
 extern const std::string RESET;
 
